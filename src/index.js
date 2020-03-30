@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import "./index.css";
 
 
+
 class Wrapper extends React.Component {
   constructor(props) {
     super(props);
@@ -10,7 +11,30 @@ class Wrapper extends React.Component {
       display: null
     }
     this.handleKey = this.handleKey.bind(this)
+    this.handleClick = this.handleClick.bind(this)
+    this.setDisplay = this.setDisplay.bind(this)
   }
+
+  setDisplay(id) {
+    this.setState({
+      display: id
+    })
+  }
+
+  handleClick(event) {
+    let dataKey = event.target.dataset.key
+    if (document.querySelector(`audio[data-key="${dataKey}"]`)) {
+      const audio = document.querySelector(`audio[data-key="${dataKey}"]`)
+      audio.currentTime = 0;
+      this.setDisplay(event.target.id)
+      audio.play();
+      event.target.classList.add("playing")
+    }
+  }
+  handleClickUp(event) {
+    event.target.classList.remove("playing")
+  }
+
   handleKey(event) {
 
     if (document.querySelector(`.drum-pad[data-key="${event.keyCode}"]`)) {
@@ -38,11 +62,14 @@ class Wrapper extends React.Component {
   componentDidMount() {
     document.addEventListener("keydown", this.handleKey)
     document.addEventListener("keyup", this.handleKeyUp)
+    document.addEventListener("mousedown", this.handleClick)
+    document.addEventListener("mouseup", this.handleClickUp)
 
   }
   render() {
     return (
       <div id="drum-machine">
+        <h1>Drum Machine</h1>
         <div id="display">{this.state.display}</div>
         <div className="container">
           <div className="row">
